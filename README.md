@@ -16,6 +16,10 @@ Cuando los tres planetas no están alineados, forman entre sí un triángulo.
 
 Las condiciones óptimas de presión y temperatura se dan cuando los tres planetas están alineados entre sí pero no están alineados con el sol.
 
+#### A considerar
+* Se utilizó una presición de 2 decimales para realizar los cálculos.
+* La posición inicial de los planetas es alineados con el sol.
+
 ## Preguntas
 Realizar un programa informático para poder predecir en los próximos 10 años:
 1. ¿Cuántos períodos de sequía habrá? 
