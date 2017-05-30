@@ -11,6 +11,8 @@ import com.mongodb.casbah.commons.MongoDBObject
 import spray.http.StatusCode
 import salat.global._
 
+import scala.util.Try
+
 object Main extends App with SimpleRoutingApp {
 
   implicit val system = ActorSystem("my-system")
@@ -28,11 +30,9 @@ object Main extends App with SimpleRoutingApp {
     } ~
     path("simular") {
       get {
-        parameters('precision ? "2"){
-          (presicion)=> complete {
-            Rounder.decimals(presicion.toInt)
-            StatusCode.int2StatusCode(200) -> Simulation.simulateXyears(10,SolarSystem)
-          }
+        complete {
+          Rounder.decimals(2)
+          StatusCode.int2StatusCode(200) -> Simulation.simulateXyears(10,SolarSystem)
         }
       }
     } ~
@@ -55,11 +55,15 @@ object Main extends App with SimpleRoutingApp {
         // ask for the climate of certain day /clima?dia={diaX}
         parameters('dia){
           (dia)=> complete {
-            val maybeDay = DayDAO.findOneById(dia.toInt)
-            if(maybeDay.isDefined) {
-              StatusCode.int2StatusCode(200) ->maybeDay.get
-            }else{
+            if(Try(dia.toInt).isFailure){
               StatusCode.int2StatusCode(404) -> Error("Dia no encontrado")
+            }else {
+              val maybeDay = DayDAO.findOneById(dia.toInt)
+              if(maybeDay.isDefined) {
+                StatusCode.int2StatusCode(200) ->maybeDay.get
+              }else{
+                StatusCode.int2StatusCode(404) -> Error("Dia no encontrado")
+              }
             }
           }
         }
